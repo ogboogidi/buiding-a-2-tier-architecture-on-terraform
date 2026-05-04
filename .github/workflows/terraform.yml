@@ -1,0 +1,72 @@
+
+name: terraform github actions workflow for our Dev project.
+
+on: 
+  pull_request:
+    branches: ["main"]
+  
+  push: 
+    branches: ["main"]
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+    TF_VERSION: 1.6.6
+    AWS_REGION: us-east-1
+
+
+jobs:
+  terraform:
+    name: terraform
+    environment: dev
+    runs-on: ubuntu-latest
+
+    defaults:
+      run: 
+        shell: bash
+
+    steps:
+      # 1. checkout github repository
+      - name: checkout github repository
+        uses: actions/checkout@v4
+
+      # 2. aws credentials
+      - name: aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # 3. setup terraform
+      - name: setup terraform
+        uses: hashicorp/setup-terraform@v3 
+        with: 
+          terraform_verion: ${{ env.TF_VERSION }}
+
+      # 4. terraform init
+      - name: terraform init
+        run: terraform init 
+
+      # 5. select or create workspace
+      - name: setup or select terraform workspace
+        run: terraform workspace select dev || terraform workspace new dev
+
+      # 6. terraform fmt check
+      - name: terraform Format
+        run: terraform fmt -check
+
+      # 7. terraform validate 
+      - name: terraform validate
+        run: terraform validate
+
+      # 8. terraform plan
+      - name: terraform plan 
+        if: github.event_name == 'pull_request'
+        run: terraform plan -var-file=dev.tfvars -input=false
+
+      # 9. terraform apply
+      - name: terraform apply on dev config files
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' 
+        run: terraform apply -var-file=dev.tfvars -auto-approve -input=false 
