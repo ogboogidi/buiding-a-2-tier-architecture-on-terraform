@@ -11,7 +11,6 @@ module "vpc" {
   tags                         = local.jupiter_tags
   vpc_cidr_block               = var.vpc_cidr_block
   availability_zone            = var.availability_zone
-  public_rtb_cidr_block        = var.public_rtb_cidr_block
   public_subnet_cidr_block     = var.public_subnet_cidr_block
   private_subnet_cidr_block    = var.private_subnet_cidr_block
   db_private_subnet_cidr_block = var.db_private_subnet_cidr_block
@@ -37,18 +36,18 @@ module "ec2" {
 }
 
 
-module "database" {
-  source                  = "./module/database"
-  vpc_id                  = module.vpc.vpc_id
-  jupiter_db_subnet_group = module.vpc.jupiter_db_subnet_group
-  jupiter_bastion_host_sg = module.ec2.jupiter_bastion_host_sg
-  instance_class          = var.instance_class
-  username                = var.username
-  engine_version          = var.engine_version
-}
+# module "database" {
+#   source                  = "./module/database"
+#   vpc_id                  = module.vpc.vpc_id
+#   jupiter_db_subnet_group = module.vpc.jupiter_db_subnet_group
+#   jupiter_bastion_host_sg = module.ec2.jupiter_bastion_host_sg
+#   instance_class          = var.instance_class
+#   username                = var.username
+#   engine_version          = var.engine_version
+# }
 
-module "route53" {
-  source       = "./module/route53"
-  alb_dns_name = module.alb.alb_dns_name
-  alb_zone_id  = module.alb.alb_zone_id
-}
+# module "route53" {
+#   source       = "./module/route53"
+#   alb_dns_name = module.alb.alb_dns_name
+#   alb_zone_id  = module.alb.alb_zone_id
+# }
