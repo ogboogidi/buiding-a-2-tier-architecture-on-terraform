@@ -63,7 +63,7 @@ resource "aws_route_table" "public_rtb" {
   vpc_id = aws_vpc.jupiter_main_vpc.id
 
   route {
-    cidr_block = var.public_rtb_cidr_block
+    cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
 
