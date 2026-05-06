@@ -2,6 +2,18 @@ provider "aws" {
   region = "us-east-1"
 }
 
+# configure remote backend
+
+terraform {
+  backend "s3" {
+    bucket         = "terraform-github-actiontf"
+    key            = "terraform_tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "tf.statelocking"
+    encrypt        = true
+
+  }
+}
 
 
 # configuring the vpc
