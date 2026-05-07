@@ -6,7 +6,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket         = "terraform-github-actiontf"
+    bucket         = "terraform-github-action-workflow"
     key            = "terraform_tfstate"
     region         = "us-east-1"
     dynamodb_table = "tf.statelocking"
