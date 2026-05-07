@@ -53,7 +53,7 @@ resource "aws_instance" "jupiter_server" {
   instance_type = var.instance_type
   security_groups = [aws_security_group.jupiter_server_sg.id]
   associate_public_ip_address = true
-  user_data_base64 = base64encode(file("scripts/jupiter_app.sh"))
+  user_data_base64 = base64encode(file("scripts/philo_appreciation_app.sh"))
 
   for_each  = var.public_subnet_ids
 
